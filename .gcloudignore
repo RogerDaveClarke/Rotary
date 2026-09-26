@@ -1,0 +1,24 @@
+# Upload only files required to build the Cloud Run image.
+.gcloudignore
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+node_modules
+*.log
+*.pem
+*.key
+*.cer
+*.cert
+*.csr
+*.p12
+*.json
+!package.json
+!package-lock.json
+request.certSigningRequest
+google-key.json
+*service-account*.json
+google-wallet*.json
+NUL
+x

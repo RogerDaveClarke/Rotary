@@ -1,0 +1,21 @@
+{
+  "name": "rotary-wallet-project",
+  "version": "1.0.0",
+  "description": "Official Rotary business and meeting schedule pass card builder engine",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^9.2.0",
+    "dotenv": "^18.0.3",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.7.0",
+    "google-auth-library": "^10.3.0",
+    "passkit-generator": "^3.6.0",
+    "qrcode": "^1.5.4"
+  },
+  "overrides": {
+    "joi": "17.13.6"
+  }
+}
