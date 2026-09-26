@@ -14,13 +14,20 @@ A member logs into the card generator with an access code and fills out an HTML 
 
 When that member later meets an interested party, they can share the card directly: an Apple Wallet pass can be shared phone-to-phone (for example, over AirDrop), and a Google Wallet card can be shared by having the recipient scan the QR code printed on the card, which saves that same card straight to their Google Wallet.
 
-![alt text](assets/image-1.png)
+![alt text](/assets/image_1.png)
+
+#### Pass Generator
+![alt text](/assets/image_2.png)
+
+#### Apple Pass (Front)
+![alt text](/assets/image_2.png)
+
 
 #### Apple Pass (Back)
-![alt text](assets/image-2.png)
+![alt text](/assets/image_3.png)
 
 #### Google Pass
-![alt text](assets/image-3.png)
+![alt text](/assets/image_4.png)
 
 Clone this repository, fill in your own configuration, and deploy it to your own Google Cloud project.
 
