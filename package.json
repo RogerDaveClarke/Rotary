@@ -4,7 +4,8 @@
   "description": "Official Rotary business and meeting schedule pass card builder engine",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "node --test"
   },
   "dependencies": {
     "@google-cloud/firestore": "^9.2.0",

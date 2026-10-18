@@ -1,0 +1,83 @@
+---
+references:
+  - "File: /src/server.js"
+  - "File: /src/app.js"
+  - "File: /src/config.js"
+  - "File: /src/routes/cardRoutes.js"
+  - "File: /src/routes/authRoutes.js"
+  - "File: /src/routes/internalRoutes.js"
+  - "File: /src/services/applePassService.js"
+  - "File: /src/services/googlePassService.js"
+  - "File: /src/services/installTrackerService.js"
+generationTime: 2026-10-04T06:21:24.186Z
+---
+flowchart TD
+    Start(["Server Start"]) --> Init["Load env, configure Express, Firestore, OIDC client"]
+    Init --> Routes{"Incoming Request"}
+
+    Routes -->|GET /healthz| Health["Return status ok"]
+    Routes -->|GET /login| LoginForm["Render login form"]
+    Routes -->|POST /login| LoginCheck{"Valid access code?"}
+    LoginCheck -->|No| LoginFail["401 Invalid access code"]
+    LoginCheck -->|Yes| SetCookie["Set signed session cookie"] --> RedirectHome["Redirect to /"]
+    Routes -->|POST /logout| ClearCookie["Clear session cookie"] --> RedirectLogin["Redirect to /login"]
+
+    Routes -->|POST /internal/check-installs| VerifyOIDC{"Valid OIDC token & invoker email?"}
+    VerifyOIDC -->|No| Unauthorized["401/403 response"]
+    VerifyOIDC -->|Yes| QueryFirestore[("Query walletObjects where hasUsers=false")]
+    QueryFirestore --> LoopDocs{"For each doc"}
+    LoopDocs --> CheckWallet["Call Google Wallet API for object status"]
+    CheckWallet --> HasUsers{"hasUsers true?"}
+    HasUsers -->|Yes| UpdateDoc["Update doc: hasUsers=true, log event"] --> LoopDocs
+    HasUsers -->|No| LoopDocs
+    LoopDocs -->|Done| ReturnCounts["Return checked/confirmed counts"]
+
+    Routes -->|GET /assets/*| ServeAssets["Serve static/logo assets"]
+
+    Routes -->|requireCreator middleware| AuthCheck{"hasCreatorSession?"}
+    AuthCheck -->|No| RedirectLogin2["Redirect to /login"]
+    AuthCheck -->|Yes| Protected["Continue to protected route"]
+
+    Protected -->|GET /preview/google-qr| GenQR["Generate QR code buffer"] --> ReturnQR["Send PNG"]
+    Protected -->|GET /| RenderDashboard["Render HTML form + live preview"]
+
+    Protected -->|POST /generate| AppleFlow["getCardData from body"]
+    AppleFlow --> CheckSettings{"Missing Apple settings/files?"}
+    CheckSettings -->|Yes| AppleError["500 Missing settings/files"]
+    CheckSettings -->|No| BuildPass["Build PKPass with fields"]
+    BuildPass --> SignPass["Sign & buffer pass"]
+    SignPass --> LogAppleEvent["Log pass_issued event"] --> SendPkpass["Send .pkpass file"]
+    BuildPass -->|Error| AppleCatch["500 Unable to generate pass"]
+
+    Protected -->|POST /generate/google| GoogleFlow["getCardData from body"]
+    GoogleFlow --> CheckGoogleConfig{"Issuer ID / Base URL valid?"}
+    CheckGoogleConfig -->|No| GoogleConfigError["503 Not configured"]
+    CheckGoogleConfig -->|Yes| LoadCreds["Load service account credentials"]
+    LoadCreds --> BuildJWT["signGoogleWalletJwt()"]
+    BuildJWT --> CheckURLLength{"saveUrl length > 1800?"}
+    CheckURLLength -->|Yes| URLTooLong["400 Link too long"]
+    CheckURLLength -->|No| CreateClass["POST genericClass (ignore 409)"]
+    CreateClass --> CreateObject["POST genericObject"]
+    CreateObject --> SaveFirestore[("Save walletObjects doc")]
+    SaveFirestore --> LogGoogleEvent["Log save_link_issued event"]
+    LogGoogleEvent --> RenderSaveLink["Render HTML with Save to Wallet link"]
+    GoogleFlow -->|Error| GoogleCatch["500 Unable to generate pass"]
+
+    Health --> End(["Response Sent"])
+    LoginForm --> End
+    LoginFail --> End
+    RedirectHome --> End
+    RedirectLogin --> End
+    Unauthorized --> End
+    ReturnCounts --> End
+    ServeAssets --> End
+    RedirectLogin2 --> End
+    ReturnQR --> End
+    RenderDashboard --> End
+    SendPkpass --> End
+    AppleError --> End
+    AppleCatch --> End
+    GoogleConfigError --> End
+    URLTooLong --> End
+    RenderSaveLink --> End
+    GoogleCatch --> End
