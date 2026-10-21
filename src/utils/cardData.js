@@ -1,3 +1,5 @@
+const config = require('../config');
+
 const text = (value, fallback, maxLength = 500) => String(value || fallback).trim().slice(0, maxLength);
 
 function httpsUrl(value, fallback) {
@@ -27,9 +29,60 @@ function localized(value) {
     return { defaultValue: { language: 'en-US', value } };
 }
 
+function encodeCardData(data) {
+    try {
+        const json = JSON.stringify(data);
+        return Buffer.from(json).toString('base64url');
+    } catch {
+        return '';
+    }
+}
+
+function decodeCardData(encoded) {
+    if (!encoded || typeof encoded !== 'string') {
+        return null;
+    }
+    try {
+        const json = Buffer.from(encoded, 'base64url').toString('utf8');
+        return JSON.parse(json);
+    } catch {
+        return null;
+    }
+}
+
+function detectPlatform(userAgent = '', override = '') {
+    if (override === 'apple' || override === 'google' || override === 'web') {
+        return override;
+    }
+    const ua = String(userAgent).toLowerCase();
+    if (/iphone|ipad|ipod/.test(ua)) {
+        return 'apple';
+    }
+    if (/android/.test(ua)) {
+        return 'google';
+    }
+    return 'web';
+}
+
+function getBaseUrl(req) {
+    if (config.google && config.google.publicBaseUrl) {
+        return config.google.publicBaseUrl.replace(/\/$/, '');
+    }
+    if (req) {
+        const host = req.get('host') || `localhost:${config.port}`;
+        const proto = req.get('x-forwarded-proto') || req.protocol || 'http';
+        return `${proto}://${host}`;
+    }
+    return `http://localhost:${config.port}`;
+}
+
 module.exports = {
     text,
     httpsUrl,
     getCardData,
-    localized
+    localized,
+    encodeCardData,
+    decodeCardData,
+    detectPlatform,
+    getBaseUrl
 };

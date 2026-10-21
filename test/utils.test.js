@@ -1,7 +1,7 @@
 const { test, describe } = require('node:test');
 const assert = require('node:assert/strict');
 const { equalText, sessionSignature } = require('../src/utils/crypto');
-const { text, httpsUrl, getCardData, localized } = require('../src/utils/cardData');
+const { text, httpsUrl, getCardData, localized, encodeCardData, decodeCardData, detectPlatform, getBaseUrl } = require('../src/utils/cardData');
 const { acquisitionSource, logWalletEvent } = require('../src/utils/logger');
 
 describe('crypto utils', () => {
@@ -75,6 +75,45 @@ describe('cardData utils', () => {
         assert.deepEqual(localized('Kirkland'), {
             defaultValue: { language: 'en-US', value: 'Kirkland' }
         });
+    });
+
+    test('encodeCardData and decodeCardData round-trip successfully', () => {
+        const original = { clubName: 'Kirkland', memberName: 'Jane Doe' };
+        const encoded = encodeCardData(original);
+        assert.match(encoded, /^[A-Za-z0-9_-]+$/);
+        const decoded = decodeCardData(encoded);
+        assert.deepEqual(decoded, original);
+    });
+
+    test('decodeCardData returns null for invalid input', () => {
+        assert.equal(decodeCardData(null), null);
+        assert.equal(decodeCardData(''), null);
+        assert.equal(decodeCardData('invalid-not-json!'), null);
+    });
+
+    test('detectPlatform correctly detects iOS, Android, and web with override support', () => {
+        const iPhoneUA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1';
+        const androidUA = 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/120.0.0.0 Mobile Safari/537.36';
+        const desktopUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36';
+
+        assert.equal(detectPlatform(iPhoneUA), 'apple');
+        assert.equal(detectPlatform(androidUA), 'google');
+        assert.equal(detectPlatform(desktopUA), 'web');
+
+        // Overrides take precedence
+        assert.equal(detectPlatform(iPhoneUA, 'google'), 'google');
+        assert.equal(detectPlatform(androidUA, 'apple'), 'apple');
+        assert.equal(detectPlatform(desktopUA, 'apple'), 'apple');
+        assert.equal(detectPlatform(iPhoneUA, 'web'), 'web');
+    });
+
+    test('getBaseUrl falls back safely to req headers or localhost', () => {
+        const mockReq = {
+            get: (header) => (header === 'host' ? 'rotary.example.com' : header === 'x-forwarded-proto' ? 'https' : undefined),
+            protocol: 'http'
+        };
+        const url = getBaseUrl(mockReq);
+        assert.ok(url.includes('rotary.example.com'));
     });
 });
 

@@ -4,7 +4,7 @@ const { GoogleAuth } = require('google-auth-library');
 const { Firestore, FieldValue } = require('@google-cloud/firestore');
 const QRCode = require('qrcode');
 const config = require('../config');
-const { localized } = require('../utils/cardData');
+const { localized, encodeCardData } = require('../utils/cardData');
 const { logWalletEvent, acquisitionSource } = require('../utils/logger');
 
 const firestore = new Firestore();
@@ -36,7 +36,7 @@ async function signGoogleWalletJwt(auth, credentials, payload) {
 }
 
 async function generateGoogleQrPreview(baseUrl) {
-    const shareUrl = `${baseUrl.replace(/\/$/, '')}/?shared=google-wallet`;
+    const shareUrl = `${baseUrl.replace(/\/$/, '')}/share?source=preview`;
     return QRCode.toBuffer(shareUrl, { margin: 1, width: 180, errorCorrectionLevel: 'M' });
 }
 
@@ -68,6 +68,9 @@ async function generateGooglePass(data, source) {
         const classId = `${issuerId}.rotary_club_card`;
         const objectId = `${issuerId}.${randomUUID().replaceAll('-', '_')}`;
         const normalizedBaseUrl = publicBaseUrl.replace(/\/$/, '');
+        const encodedData = encodeCardData(data);
+        const smartShareUrl = `${normalizedBaseUrl}/share?data=${encodedData}`;
+
         const auth = new GoogleAuth({
             ...(credentialsPath ? { keyFile: credentialsPath } : {}),
             scopes: [
@@ -110,15 +113,21 @@ async function generateGooglePass(data, source) {
                 sourceUri: { uri: `${normalizedBaseUrl}/assets/rotary-wheel.png` },
                 contentDescription: localized('Rotary Club of Kirkland')
             },
-            barcode: { type: 'QR_CODE', value: saveUrl, alternateText: 'Scan to share with a potential member' },
+            barcode: {
+                type: 'QR_CODE',
+                value: smartShareUrl,
+                alternateText: 'Scan to save on iPhone or Android'
+            },
             textModulesData: [
                 { id: 'venue', header: 'Meeting Schedule', body: `${data.dinnerTime}\n${data.meetingTime}\n\n${[data.venue, data.venueAddress].filter(Boolean).join('\n')}` },
                 { id: 'notes', header: 'Notes', body: data.logisticNotes },
                 { id: 'member', header: 'Referring Member', body: `${data.memberName} - ${data.memberPhone}` },
-                { id: 'share', header: 'Share This Card', body: 'Have another Android user scan the QR code with their phone camera to create a fresh card.' }
+                { id: 'share', header: 'Share This Card', body: 'Have any iPhone or Android user scan the QR code with their phone camera to save this card to Apple Wallet or Google Wallet.' }
             ],
             linksModuleData: {
                 uris: [
+                    { id: 'apple_wallet', uri: `${smartShareUrl}&platform=apple`, description: 'Add to Apple Wallet (iPhone)' },
+                    { id: 'share_card', uri: smartShareUrl, description: 'Share Card (iPhone & Android)' },
                     { id: 'website', uri: data.websiteUrl, description: 'Open Club Website' }
                 ]
             }

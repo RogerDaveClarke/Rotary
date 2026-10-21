@@ -1,1 +1,13 @@
-*
+# .continueignore
+dist/
+build/
+node_modules/
+*.db
+*.sqlite
+*.log
+*.json
+*.md
+*.cer
+*.pem
+*.ps1
+env*.*

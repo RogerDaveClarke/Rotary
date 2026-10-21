@@ -145,6 +145,8 @@ function renderDashboardPage({ source = 'direct' } = {}) {
                             <div class="back-fields">
                                 <div class="back-field"><div class="field-label">Full Address</div><div class="field-value" id="prevBackAddress">Prosecco Restaurant &amp; Pizzeria\n7 Lakeshore Plaza\nKirkland, WA 98033\nUnited States of America</div></div>
                                 <div class="back-field"><div class="field-label">Full Notes</div><div class="field-value" id="prevBackNotes">In-person the 1st and 3rd Monday and socials on the second Monday of the month. No meetings on federal holidays or the fourth and fifth Mondays.</div></div>
+                                <div class="back-field"><div class="field-label">Add to Google Wallet</div><div class="field-value"><a href="#">Add to Google Wallet (Android)</a></div></div>
+                                <div class="back-field"><div class="field-label">Share Card Link</div><div class="field-value"><a href="#">Share Card with Any Device</a></div></div>
                                 <div class="back-field"><div class="field-label">Club Website</div><div class="field-value"><a id="prevWebsite" href="https://kirklandrotary.org">https://kirklandrotary.org</a></div></div>
                             </div>
                         </section>
@@ -164,14 +166,14 @@ function renderDashboardPage({ source = 'direct' } = {}) {
                                 </div>
                                 <div class="google-header" id="prevGoogleHeader">Jane Doe</div>
                                 <img class="google-qr" src="/preview/google-qr" alt="QR code to share with a potential member">
-                                <div class="google-qr-caption">Scan to share with a potential member</div>
+                                <div class="google-qr-caption">Scan to save on iPhone or Android</div>
                             </div>
                             <div class="google-details">
                                 <div class="google-module"><div class="google-module-title">Meeting Schedule</div><div class="google-module-value"><span id="prevGoogleScheduleDinner">Dinner at 5:45 pm</span>\n<span id="prevGoogleScheduleTime">Club Meetings at 6:15 pm</span>\n\n<span id="prevGoogleAddress">Prosecco Restaurant &amp; Pizzeria\n7 Lakeshore Plaza\nKirkland, WA 98033\nUnited States of America</span></div></div>
                                 <div class="google-module"><div class="google-module-title">Notes</div><div class="google-module-value" id="prevGoogleNotes"></div></div>
                                 <div class="google-module"><div class="google-module-title">Referring Member</div><div class="google-module-value"><span id="prevGoogleMember">Jane Doe</span> - <span id="prevGooglePhone">+1-425-555-0199</span></div></div>
-                                <div class="google-module"><div class="google-module-title">Share This Card</div><div class="google-module-value">Have another Android user scan the QR code with their phone camera to create a fresh card.</div></div>
-                                <div class="google-module"><div class="google-module-title">Links</div><div class="google-module-value"><a class="google-link" id="prevGoogleWebsite" href="https://kirklandrotary.org">Open Club Website</a></div></div>
+                                <div class="google-module"><div class="google-module-title">Share This Card</div><div class="google-module-value">Have any iPhone or Android user scan the QR code with their phone camera to save this card to Apple Wallet or Google Wallet.</div></div>
+                                <div class="google-module"><div class="google-module-title">Links</div><div class="google-module-value"><a class="google-link" href="#">Add to Apple Wallet (iPhone)</a><a class="google-link" href="#">Share Card (iPhone &amp; Android)</a><a class="google-link" id="prevGoogleWebsite" href="https://kirklandrotary.org">Open Club Website</a></div></div>
                             </div>
                         </div>
                     </div>

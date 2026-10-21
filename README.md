@@ -1,8 +1,13 @@
 # Rotary Wallet Card Generator
 
-## Problem Statement
+## Customer Discovery 
 
 Rotary members often meet people who are unfamiliar with Rotary. After learning what Rotary does, these people express interest in joining a local club — but the member then has to verbally share a lot of details: their name, contact information, club name, and meeting location and time. These details are easily forgotten, which can lead to a potential member never attending their first meeting and getting to know other members.
+
+## Requirements
+
+## Product Definiton
+
 
 ## Potential Solution
 
@@ -12,7 +17,10 @@ Instead of relying on memory, a member can hand over a digital business card (an
 
 A member logs into the card generator with an access code and fills out an HTML form with their name, contact number, meeting schedule, venue name and address, and a link to the club website. Submitting the form creates either an Apple Wallet pass or a Google Wallet card, which the member adds to their own phone.
 
-When that member later meets an interested party, they can share the card directly: an Apple Wallet pass can be shared phone-to-phone (for example, over AirDrop), and a Google Wallet card can be shared by having the recipient scan the QR code printed on the card, which saves that same card straight to their Google Wallet.
+When that member later meets an interested party, they can share the card directly across platforms:
+- **Google Wallet to Apple User (Android &rarr; iPhone)**: The Google Wallet card includes a prominent "Add to Apple Wallet (iPhone)" link in its pass menu and a smart QR code. When an iPhone user scans the card or opens the link, Safari detects iOS and directly streams the native `.pkpass` file, prompting the native Apple Wallet "Add" preview sheet.
+- **Apple Wallet to Google User (iPhone &rarr; Android)**: The Apple Wallet pass features a QR code on the front and reciprocal "Add to Google Wallet (Android)" and universal sharing links on the back. When an Android user scans the QR code or opens the link, the gateway detects Android and automatically redirects to the Google Wallet save link, adding the card straight to Google Wallet.
+- **Desktop / Web Fallback**: Visiting the card link on desktop or unsupported devices displays a responsive public landing page with one-click buttons for both Apple Wallet and Google Wallet, plus an on-screen QR code for mobile scanning.
 
 ![alt text](/assets/image_1.png)
 

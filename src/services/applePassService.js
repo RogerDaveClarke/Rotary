@@ -3,6 +3,7 @@ const path = require('path');
 const { randomUUID } = require('crypto');
 const { PKPass, PassType } = require('passkit-generator');
 const config = require('../config');
+const { encodeCardData } = require('../utils/cardData');
 const { logWalletEvent } = require('../utils/logger');
 
 function validateAppleSettings(appleSettings) {
@@ -37,7 +38,7 @@ function validateAppleFiles(requiredFiles) {
     return { valid: true };
 }
 
-async function generateApplePass(data, source) {
+async function generateApplePass(data, source, baseUrl = null) {
     const appleSettings = config.apple;
     const settingsValidation = validateAppleSettings(appleSettings);
     if (!settingsValidation.valid) {
@@ -105,6 +106,36 @@ async function generateApplePass(data, source) {
             attributedValue: `<a href="${data.websiteUrl}">${data.websiteUrl}</a>`,
             dataDetectorTypes: ['PKDataDetectorTypeLink']
         });
+
+        const publicHost = baseUrl || config.google.publicBaseUrl || '';
+        if (publicHost) {
+            const normalizedHost = publicHost.replace(/\/$/, '');
+            const encodedData = encodeCardData(data);
+            const shareUrl = `${normalizedHost}/share?data=${encodedData}`;
+
+            pass.setBarcodes({
+                format: 'PKBarcodeFormatQR',
+                message: shareUrl,
+                messageEncoding: 'iso-8859-1',
+                altText: 'Scan to save to Apple or Google Wallet'
+            });
+
+            generic.backFields.push({
+                key: 'shareGoogle',
+                label: 'Add to Google Wallet (Android)',
+                value: `${shareUrl}&platform=google`,
+                attributedValue: `<a href="${shareUrl}&platform=google">Add to Google Wallet</a>`,
+                dataDetectorTypes: ['PKDataDetectorTypeLink']
+            });
+            generic.backFields.push({
+                key: 'shareUniversal',
+                label: 'Share Card Link',
+                value: shareUrl,
+                attributedValue: `<a href="${shareUrl}">Share with any device</a>`,
+                dataDetectorTypes: ['PKDataDetectorTypeLink']
+            });
+        }
+
         pass.types.push(generic);
 
         const passBuffer = pass.getAsBuffer();
