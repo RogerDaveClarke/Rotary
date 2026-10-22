@@ -119,7 +119,7 @@ async function generateGooglePass(data, source) {
             subheader: localized(`${data.memberName}${data.memberPhone ? ` (${data.memberPhone})` : ''}`),
             hexBackgroundColor: '#ffffff',
             logo: {
-                sourceUri: { uri: `${normalizedBaseUrl}/assets/logo@2x.png` },
+                sourceUri: { uri: `${normalizedBaseUrl}/assets/rotary-wheel.png` },
                 contentDescription: localized(`Rotary Club of ${data.clubName}`)
             },
             wideLogo: {
