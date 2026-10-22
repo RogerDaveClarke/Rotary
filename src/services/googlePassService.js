@@ -103,7 +103,7 @@ async function generateGooglePass(data, source) {
 
         const textModules = [
             { id: 'schedule', header: 'Meeting Schedule', body: `${data.dinnerTime}\n${data.meetingTime}` },
-            data.venue ? { id: 'venue', header: 'Venue', body: [data.venue, data.venueAddress].filter(Boolean).join('\n') } : null,
+            { id: 'venue', header: 'Venue', body: [data.venue, data.venueAddress].filter(Boolean).join('\n') || 'TBD' },
             { id: 'member', header: 'Referring Member', body: `${data.memberName}${data.memberPhone ? `\n${data.memberPhone}` : ''}` },
             data.logisticNotes ? { id: 'notes', header: 'Notes', body: data.logisticNotes } : null,
             { id: 'share', header: 'Share This Card', body: 'Have any iPhone or Android user scan this QR code with their camera to save this card to Apple Wallet or Google Wallet.' }
@@ -115,8 +115,8 @@ async function generateGooglePass(data, source) {
             state: 'ACTIVE',
             genericType: 'GENERIC_OTHER',
             cardTitle: localized(`Rotary Club of ${data.clubName}`),
-            subheader: localized('Referring Member'),
-            header: localized(`${data.memberName}${data.memberPhone ? ` (${data.memberPhone})` : ''}`),
+            header: localized('Referring Member'),
+            subheader: localized(`${data.memberName}${data.memberPhone ? ` (${data.memberPhone})` : ''}`),
             hexBackgroundColor: '#ffffff',
             logo: {
                 sourceUri: { uri: `${normalizedBaseUrl}/assets/rotary-wheel.png` },
@@ -160,14 +160,46 @@ async function generateGooglePass(data, source) {
         };
         const apiBase = 'https://walletobjects.googleapis.com/walletobjects/v1';
 
+        const genericClass = {
+            id: classId,
+            classTemplateInfo: {
+                cardTemplateOverride: {
+                    cardRowTemplateInfos: [
+                        {
+                            twoItems: {
+                                startItem: {
+                                    firstValue: {
+                                        fields: [{ fieldPath: "object.textModulesData['schedule']" }]
+                                    }
+                                },
+                                endItem: {
+                                    firstValue: {
+                                        fields: [{ fieldPath: "object.textModulesData['venue']" }]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        };
+
         try {
             await client.request({
                 url: `${apiBase}/genericClass`,
                 method: 'POST',
-                data: { id: classId }
+                data: genericClass
             });
         } catch (error) {
-            if (error.response?.status !== 409) {
+            if (error.response?.status === 409) {
+                await client.request({
+                    url: `${apiBase}/genericClass/${encodeURIComponent(classId)}`,
+                    method: 'PATCH',
+                    data: {
+                        classTemplateInfo: genericClass.classTemplateInfo
+                    }
+                });
+            } else {
                 throw error;
             }
         }
