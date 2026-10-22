@@ -1,0 +1,99 @@
+{
+  "id": "ISSUER_ID.OBJECT_ID",
+  "classId": "ISSUER_ID.rotary_club_card",
+  "state": "ACTIVE",
+  "genericType": "GENERIC_OTHER",
+  "hexBackgroundColor": "#ffffff",
+  "cardTitle": {
+    "defaultValue": {
+      "language": "en-US",
+      "value": "Rotary Club of {{CLUB_NAME}}"
+    }
+  },
+  "header": {
+    "defaultValue": {
+      "language": "en-US",
+      "value": "Referring Member"
+    }
+  },
+  "subheader": {
+    "defaultValue": {
+      "language": "en-US",
+      "value": "{{MEMBER_NAME}} ({{MEMBER_PHONE}})"
+    }
+  },
+  "logo": {
+    "sourceUri": {
+      "uri": "{{PUBLIC_BASE_URL}}/assets/rotary-wheel.png"
+    },
+    "contentDescription": {
+      "defaultValue": {
+        "language": "en-US",
+        "value": "Rotary Club of {{CLUB_NAME}}"
+      }
+    }
+  },
+  "wideLogo": {
+    "sourceUri": {
+      "uri": "{{PUBLIC_BASE_URL}}/assets/logo@2x.png"
+    },
+    "contentDescription": {
+      "defaultValue": {
+        "language": "en-US",
+        "value": "Rotary Club of {{CLUB_NAME}}"
+      }
+    }
+  },
+  "barcode": {
+    "type": "QR_CODE",
+    "value": "{{SHARE_URL}}",
+    "alternateText": "Scan to save on iPhone or Android"
+  },
+  "textModulesData": [
+    {
+      "id": "schedule",
+      "header": "Meeting Schedule",
+      "body": "{{DINNER_TIME}}\n{{MEETING_TIME}}"
+    },
+    {
+      "id": "venue",
+      "header": "Venue",
+      "body": "{{VENUE}}\n{{VENUE_ADDRESS}}"
+    },
+    {
+      "id": "member",
+      "header": "Referring Member",
+      "body": "{{MEMBER_NAME}}\n{{MEMBER_PHONE}}"
+    },
+    {
+      "id": "notes",
+      "header": "Notes",
+      "body": "{{LOGISTIC_NOTES}}"
+    },
+    {
+      "id": "share",
+      "header": "Share This Card",
+      "body": "Have any iPhone or Android user scan this QR code with their camera to save this card to Apple Wallet or Google Wallet."
+    }
+  ],
+  "linksModuleData": {
+    "uris": [
+      {
+        "id": "apple_wallet",
+        "uri": "{{SHARE_URL}}&platform=apple",
+        "description": "Add to Apple Wallet (iPhone)"
+      },
+      {
+        "id": "share_card",
+        "uri": "{{SHARE_URL}}",
+        "description": "Share Card (iPhone and Android)"
+      },
+      {
+        "id": "website",
+        "uri": "{{WEBSITE_URL}}",
+        "description": "Open Club Website"
+      }
+    ]
+  }
+}
+
