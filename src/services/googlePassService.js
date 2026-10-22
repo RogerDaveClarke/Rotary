@@ -101,33 +101,55 @@ async function generateGooglePass(data, source) {
             };
         }
 
+        const textModules = [
+            { id: 'schedule', header: 'Meeting Schedule', body: `${data.dinnerTime}\n${data.meetingTime}` },
+            data.venue ? { id: 'venue', header: 'Venue', body: [data.venue, data.venueAddress].filter(Boolean).join('\n') } : null,
+            { id: 'member', header: 'Referring Member', body: `${data.memberName}${data.memberPhone ? `\n${data.memberPhone}` : ''}` },
+            data.logisticNotes ? { id: 'notes', header: 'Notes', body: data.logisticNotes } : null,
+            { id: 'share', header: 'Share This Card', body: 'Have any iPhone or Android user scan this QR code with their camera to save this card to Apple Wallet or Google Wallet.' }
+        ].filter(Boolean);
+
         const genericObject = {
             id: objectId,
             classId,
             state: 'ACTIVE',
             genericType: 'GENERIC_OTHER',
             cardTitle: localized(`Rotary Club of ${data.clubName}`),
-            header: localized(data.memberName),
+            subheader: localized('Referring Member'),
+            header: localized(`${data.memberName}${data.memberPhone ? ` (${data.memberPhone})` : ''}`),
             hexBackgroundColor: '#ffffff',
             logo: {
                 sourceUri: { uri: `${normalizedBaseUrl}/assets/rotary-wheel.png` },
-                contentDescription: localized('Rotary Club of Kirkland')
+                contentDescription: localized(`Rotary Club of ${data.clubName}`)
+            },
+            cardTemplateOverride: {
+                cardRowTemplateInfos: [
+                    {
+                        twoItems: {
+                            startItem: {
+                                firstValue: {
+                                    fields: [{ fieldPath: "object.textModulesData['schedule']" }]
+                                }
+                            },
+                            endItem: {
+                                firstValue: {
+                                    fields: [{ fieldPath: "object.textModulesData['venue']" }]
+                                }
+                            }
+                        }
+                    }
+                ]
             },
             barcode: {
                 type: 'QR_CODE',
                 value: smartShareUrl,
                 alternateText: 'Scan to save on iPhone or Android'
             },
-            textModulesData: [
-                { id: 'venue', header: 'Meeting Schedule', body: `${data.dinnerTime}\n${data.meetingTime}\n\n${[data.venue, data.venueAddress].filter(Boolean).join('\n')}` },
-                { id: 'notes', header: 'Notes', body: data.logisticNotes },
-                { id: 'member', header: 'Referring Member', body: `${data.memberName} - ${data.memberPhone}` },
-                { id: 'share', header: 'Share This Card', body: 'Have any iPhone or Android user scan the QR code with their phone camera to save this card to Apple Wallet or Google Wallet.' }
-            ],
+            textModulesData: textModules,
             linksModuleData: {
                 uris: [
                     { id: 'apple_wallet', uri: `${smartShareUrl}&platform=apple`, description: 'Add to Apple Wallet (iPhone)' },
-                    { id: 'share_card', uri: smartShareUrl, description: 'Share Card (iPhone & Android)' },
+                    { id: 'share_card', uri: smartShareUrl, description: 'Share Card (iPhone and Android)' },
                     { id: 'website', uri: data.websiteUrl, description: 'Open Club Website' }
                 ]
             }

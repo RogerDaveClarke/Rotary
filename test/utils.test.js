@@ -108,12 +108,20 @@ describe('cardData utils', () => {
     });
 
     test('getBaseUrl falls back safely to req headers or localhost', () => {
-        const mockReq = {
-            get: (header) => (header === 'host' ? 'rotary.example.com' : header === 'x-forwarded-proto' ? 'https' : undefined),
-            protocol: 'http'
-        };
-        const url = getBaseUrl(mockReq);
-        assert.ok(url.includes('rotary.example.com'));
+        const orig = process.env.PUBLIC_BASE_URL;
+        delete process.env.PUBLIC_BASE_URL;
+        try {
+            const mockReq = {
+                get: (header) => (header === 'host' ? 'rotary.example.com' : header === 'x-forwarded-proto' ? 'https' : undefined),
+                protocol: 'http'
+            };
+            const url = getBaseUrl(mockReq);
+            assert.ok(url.includes('rotary.example.com'));
+        } finally {
+            if (orig !== undefined) {
+                process.env.PUBLIC_BASE_URL = orig;
+            }
+        }
     });
 });
 

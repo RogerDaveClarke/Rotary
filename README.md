@@ -2,7 +2,7 @@
 
 ## Customer Discovery 
 
-Rotary members often meet people who are unfamiliar with Rotary. After learning what Rotary does, these people express interest in joining a local club — but the member then has to verbally share a lot of details: their name, contact information, club name, and meeting location and time. These details are easily forgotten, which can lead to a potential member never attending their first meeting and getting to know other members.
+Rotary members often meet people who are unfamiliar with Rotary. After learning what Rotary does, these people express interest in joining a local club — but the member then has to verbally share a lot of details: their name, contact informatiox`n, club name, and meeting location and time. These details are easily forgotten, which can lead to a potential member never attending their first meeting and getting to know other members.
 
 ## Requirements
 

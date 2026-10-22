@@ -93,7 +93,13 @@ router.get('/share', async (req, res) => {
     }));
 });
 
-router.get('/', requireCreator, (req, res) => {
+router.get('/', (req, res, next) => {
+    if (req.query.shared || req.query.data) {
+        const queryString = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+        return res.redirect(303, `/share${queryString}`);
+    }
+    return requireCreator(req, res, next);
+}, (req, res) => {
     const source = req.query.shared === 'google-wallet' ? 'shared' : 'direct';
     if (source === 'shared') {
         logWalletEvent('share_landing', 'google', source);
