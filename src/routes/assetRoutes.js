@@ -5,6 +5,10 @@ const { requireCreator } = require('../middleware/auth');
 
 const router = express.Router();
 
+router.get('/assets/logo.png', (req, res) => {
+    res.sendFile(path.join(config.assetsPath, 'logo.png'));
+});
+
 router.get('/assets/logo@2x.png', (req, res) => {
     res.sendFile(path.join(config.assetsPath, 'logo@2x.png'));
 });

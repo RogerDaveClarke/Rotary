@@ -122,6 +122,10 @@ async function generateGooglePass(data, source) {
                 sourceUri: { uri: `${normalizedBaseUrl}/assets/rotary-wheel.png` },
                 contentDescription: localized(`Rotary Club of ${data.clubName}`)
             },
+            wideLogo: {
+                sourceUri: { uri: `${normalizedBaseUrl}/assets/logo@2x.png` },
+                contentDescription: localized(`Rotary Club of ${data.clubName}`)
+            },
             cardTemplateOverride: {
                 cardRowTemplateInfos: [
                     {
