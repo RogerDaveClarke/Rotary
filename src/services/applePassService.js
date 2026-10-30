@@ -119,21 +119,6 @@ async function generateApplePass(data, source, baseUrl = null) {
                 messageEncoding: 'iso-8859-1',
                 altText: 'Scan to save to Apple or Google Wallet'
             });
-
-            generic.backFields.push({
-                key: 'shareGoogle',
-                label: 'Add to Google Wallet (Android)',
-                value: `${shareUrl}&platform=google`,
-                attributedValue: `<a href="${shareUrl}&platform=google">Add to Google Wallet</a>`,
-                dataDetectorTypes: ['PKDataDetectorTypeLink']
-            });
-            generic.backFields.push({
-                key: 'shareUniversal',
-                label: 'Share Card Link',
-                value: shareUrl,
-                attributedValue: `<a href="${shareUrl}">Share with any device</a>`,
-                dataDetectorTypes: ['PKDataDetectorTypeLink']
-            });
         }
 
         pass.types.push(generic);

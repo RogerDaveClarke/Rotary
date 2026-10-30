@@ -79,16 +79,6 @@
   "linksModuleData": {
     "uris": [
       {
-        "id": "apple_wallet",
-        "uri": "{{SHARE_URL}}&platform=apple",
-        "description": "Add to Apple Wallet (iPhone)"
-      },
-      {
-        "id": "share_card",
-        "uri": "{{SHARE_URL}}",
-        "description": "Share Card (iPhone and Android)"
-      },
-      {
         "id": "website",
         "uri": "{{WEBSITE_URL}}",
         "description": "Open Club Website"

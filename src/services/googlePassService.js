@@ -152,8 +152,6 @@ async function generateGooglePass(data, source) {
             textModulesData: textModules,
             linksModuleData: {
                 uris: [
-                    { id: 'apple_wallet', uri: `${smartShareUrl}&platform=apple`, description: 'Add to Apple Wallet (iPhone)' },
-                    { id: 'share_card', uri: smartShareUrl, description: 'Share Card (iPhone and Android)' },
                     { id: 'website', uri: data.websiteUrl, description: 'Open Club Website' }
                 ]
             }
